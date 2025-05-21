@@ -1,0 +1,33 @@
+name: AstroVista OneSignal Notifications
+
+on:
+  schedule:
+    # Run at 12 PM and 6 PM IST (UTC+5:30)
+    # 6:30 AM UTC (12 PM IST)
+    # 12:30 PM UTC (6 PM IST)
+    - cron: '30 6,12 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  send-notifications:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+      
+      - name: Run notification script
+        env:
+          ASTRO_VISTA_ONESIGNAL_APP_ID: ${{ secrets.ASTRO_VISTA_ONESIGNAL_APP_ID }}
+          ASTRO_VISTA_ONESIGNAL_API_KEY: ${{ secrets.ASTRO_VISTA_ONESIGNAL_API_KEY }}
+        run: python astro_vista_onesignal.py

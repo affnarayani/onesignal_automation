@@ -21,8 +21,8 @@ def load_credentials():
     
     return app_id, api_key
 
-def send_notification(app_id, api_key, name=None, heading="AstroVista Notification", 
-                     message=None, url=None, segment="All", big_picture=None, show_rate_button=False, data=None):
+def send_notification(app_id, api_key, name=None, heading=None, 
+                     message=None, url=None, segment=None, big_picture=None, show_rate_button=None, data=None):
     """
     Send a push notification through OneSignal API
     
@@ -30,12 +30,12 @@ def send_notification(app_id, api_key, name=None, heading="AstroVista Notificati
         app_id (str): OneSignal App ID
         api_key (str): OneSignal REST API Key
         name (str, optional): Name of the notification for tracking purposes. Defaults to None.
-        heading (str, optional): Notification title. Defaults to "AstroVista Notification".
+        heading (str, optional): Notification title. Defaults to None.
         message (str): Notification message content
         url (str, optional): URL to open when notification is clicked. Defaults to None.
-        segment (str, optional): Target audience segment. Defaults to "All".
+        segment (str, optional): Target audience segment. Defaults to None.
         big_picture (str, optional): URL of the image to display in the notification. Defaults to None.
-        show_rate_button (bool, optional): Whether to show a Rate button. Defaults to False.
+        show_rate_button (bool, optional): Whether to show a Rate button. Defaults to None.
         data (dict, optional): Additional data to include. Defaults to None.
     
     Returns:
@@ -50,8 +50,6 @@ def send_notification(app_id, api_key, name=None, heading="AstroVista Notificati
     payload = {
         "app_id": app_id,
         "contents": {"en": message},
-        "headings": {"en": heading},
-        "included_segments": [segment],
         # Target only Android devices
         "isAndroid": True,
         "isIos": False,
@@ -63,6 +61,14 @@ def send_notification(app_id, api_key, name=None, heading="AstroVista Notificati
         "isSafari": False,
         "isWP_WNS": False
     }
+    
+    # Add segment if provided (default to "All" if not specified)
+    if segment:
+        payload["included_segments"] = [segment]
+    
+    # Add heading if provided
+    if heading:
+        payload["headings"] = {"en": heading}
     
     # Add Rate button if enabled
     if show_rate_button:
