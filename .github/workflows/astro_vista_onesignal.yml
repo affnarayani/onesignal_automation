@@ -1,4 +1,4 @@
-name: AstroVista OneSignal Notifications
+name: AstroVista OneSignal Rate Notifications
 
 on:
   schedule:
