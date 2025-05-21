@@ -2,10 +2,10 @@ name: Legal Advice OneSignal Rate Notifications
 
 on:
   schedule:
-    # Run at 12 PM and 6 PM IST (UTC+5:30)
-    # 6:30 AM UTC (12 PM IST)
-    # 12:30 PM UTC (6 PM IST)
-    - cron: '30 6,12 * * *'
+    # Run at 9 AM and 3 PM IST (UTC+5:30)
+    # 3:30 AM UTC (9 AM IST)
+    # 9:30 AM UTC (3 PM IST)
+    - cron: '30 3,9 * * *'
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
