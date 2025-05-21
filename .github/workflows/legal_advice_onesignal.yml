@@ -30,4 +30,4 @@ jobs:
         env:
           LEGAL_ADVICE_ONESIGNAL_APP_ID: ${{ secrets.LEGAL_ADVICE_ONESIGNAL_APP_ID }}
           LEGAL_ADVICE_ONESIGNAL_API_KEY: ${{ secrets.LEGAL_ADVICE_ONESIGNAL_API_KEY }}
-        run: python astro_vista_onesignal.py
+        run: python legal_advice_onesignal.py
