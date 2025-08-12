@@ -1,0 +1,55 @@
+name: Keep GitHub Live
+
+on:
+  schedule:
+    # Runs at 00:00 UTC on the 1st day of every month
+    - cron: "0 0 1 * *"
+  workflow_dispatch: {}
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository using PAT
+        uses: actions/checkout@v4
+        with:
+          # Use your personal access token (PAT) stored in repo secrets
+          token: ${{ secrets.PAT_TOKEN }}
+          fetch-depth: 0
+          # Checkout the branch that triggered the workflow (default branch on schedule)
+          ref: ${{ github.ref_name }}
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Ensure up-to-date with remote
+        run: |
+          git pull --rebase
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Run keep_github_live.py
+        run: python keep_github_live.py
+
+      - name: Commit changes if keep_github_live.txt updated
+        run: |
+          # Stage only the target file
+          git add keep_github_live.txt
+          # If nothing changed in that file, exit early
+          if git diff --cached --quiet; then
+            echo "No changes to commit in keep_github_live.txt"
+            exit 0
+          fi
+          git commit -m "chore: keep GitHub repo live [skip ci]"
+
+      - name: Push changes using PAT
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          # Push the commit to the same branch
+          git push origin HEAD:${TARGET_BRANCH}
